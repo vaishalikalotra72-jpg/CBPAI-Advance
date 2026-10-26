@@ -160,6 +160,43 @@ footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--mute
 footer .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
 footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 
+/* Page views and My status */
+:root{--good:#16a34a}
+.views{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top, 0px);z-index:20}
+.views .wrap{display:flex;gap:4px}
+.views button{all:unset;cursor:pointer;padding:14px 16px;font:600 .95rem var(--f-body);color:var(--muted);border-bottom:3px solid transparent}
+.views button:hover{color:var(--fg)}
+.views button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--saffron)}
+.views button:focus-visible{outline:2px solid var(--saffron);outline-offset:-2px}
+.status-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px}
+.status-form label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.9rem;min-width:0}
+.status-form input{font:400 1rem var(--f-body);padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);min-width:0}
+.status-form input:focus{outline:2px solid var(--teal);outline-offset:0}
+.check{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:12px 22px;font:600 1rem var(--f-body);cursor:pointer}
+.check:hover{filter:brightness(1.08)}
+.check[disabled]{opacity:.6;cursor:wait}
+.status-msg{margin-top:14px;min-height:1.4em;color:var(--muted)}
+.status-msg.warn{color:var(--now)}
+#statusResult{margin-top:22px}
+.who .eyebrow{color:var(--teal-text)}
+.who h3{font-size:1.7rem;margin-top:4px}
+.upd{color:var(--muted);font-size:.9rem;margin-top:4px}
+.scards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.scard{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.scard .lab{color:var(--muted)}
+.scard .chip{font-family:var(--f-display);font-size:1.3rem;line-height:1.2}
+.scard p{color:var(--muted);font-size:.9rem}
+.scard.t-good{border-top-color:var(--good)}
+.scard.t-warn{border-top-color:var(--now)}
+.scard.t-info{border-top-color:var(--teal)}
+.faq{margin-top:44px;max-width:760px}
+.faq dl{margin:0}
+.faq dt{font-weight:600;margin-top:16px}
+.faq dd{margin:4px 0 0;color:var(--muted)}
+.faq .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
+@media (max-width:860px){.scards{grid-template-columns:repeat(2,minmax(0,1fr))}.status-form{grid-template-columns:1fr}}
+@media (max-width:480px){.scards{grid-template-columns:1fr}}
+
 /* Notices from the sheet */
 .notice-row{background:var(--saffron);color:#1b1206}
 .notice-row.urgent{background:#b42318;color:#fff}
@@ -242,6 +279,13 @@ footer a{color:var(--teal-text)}
 </header>
 
 <div class="notice" id="notice" hidden></div>
+
+<nav class="views" aria-label="Page sections"><div class="wrap" role="tablist">
+  <button type="button" role="tab" id="v-prog" aria-selected="true" aria-controls="view-prog" data-view="prog">Programme</button>
+  <button type="button" role="tab" id="v-status" aria-selected="false" aria-controls="view-status" data-view="status">My status</button>
+</div></nav>
+
+<div id="view-prog" role="tabpanel" aria-labelledby="v-prog">
 
 <section class="hero" aria-labelledby="title">
   <div class="wrap">
@@ -326,6 +370,42 @@ footer a{color:var(--teal-text)}
     </div>
   </div>
 </section>
+
+</div>
+
+<div id="view-status" role="tabpanel" aria-labelledby="v-status" hidden>
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">For participants</p>
+        <h2>Check your status</h2>
+      </div>
+      <p class="note">Enter your Participant ID from your email from Team VLED, and the email address you registered with.</p>
+    </div>
+    <form id="statusForm" class="status-form" novalidate>
+      <label for="sId">Participant ID<input id="sId" name="id" autocomplete="off" autocapitalize="characters" placeholder="CBPAI-ADV07-001"></label>
+      <label for="sEmail">Registered email<input id="sEmail" name="email" type="email" autocomplete="email" placeholder="name@example.com"></label>
+      <button type="submit" class="check">Check status</button>
+    </form>
+    <p class="status-msg" id="statusMsg" role="status" aria-live="polite"></p>
+    <div id="statusResult" hidden></div>
+    <div class="faq">
+      <h3 class="sub">Common questions</h3>
+      <dl>
+        <dt>When is my status updated?</dt>
+        <dd>Once a day, after the sessions end. Today's attendance appears by the evening.</dd>
+        <dt>I joined Zoom under a different name.</dt>
+        <dd>Write to us with the name you used. Always use your full name as your Zoom display name.</dd>
+        <dt>My internet dropped during a session.</dt>
+        <dd>Short drops do not affect your status. Rejoin as soon as you can.</dd>
+        <dt>My status still looks wrong the next day.</dt>
+        <dd>Write to <span class="mail">mmttp@iitrpr.ac.in</span> with the subject “Status check – your Participant ID”.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+</div>
 
 <div class="lobby" id="lobby" hidden role="dialog" aria-label="Zoom screen">
   <div class="lobby-in">
@@ -779,6 +859,64 @@ footer a{color:var(--teal-text)}
     if (!playing) setTimeout(()=>{ if(!playing) $("caption").textContent=""; }, 1500);
   }
   $("play").addEventListener("click", ()=> playing ? stopWelcome() : startWelcome());
+
+  /* ---------- Page views: Programme / My status ---------- */
+  const STATUS_API = "";   // Apps Script web app URL (ends in /exec); empty until deployed
+  function showView(v){
+    const st = v==="status";
+    $("view-prog").hidden = st; $("view-status").hidden = !st;
+    $("v-prog").setAttribute("aria-selected", String(!st)); $("v-status").setAttribute("aria-selected", String(st));
+    if (st && playing) stopWelcome();
+    try{ history.replaceState(null, "", st ? "#status" : location.pathname + location.search); }catch(e){}
+    if (!st) window.dispatchEvent(new Event("resize"));
+  }
+  document.querySelectorAll(".views [data-view]").forEach(b=>b.addEventListener("click", ()=>{ showView(b.dataset.view); window.scrollTo(0,0); }));
+  if (location.hash==="#status") showView("status");
+
+  function sMsg(text, kind){ const m=$("statusMsg"); m.textContent=text; m.className="status-msg"+(kind?" "+kind:""); }
+  function tone(v, good, warn){
+    const x = String(v||"").toLowerCase(); if (!x) return "none";
+    if (warn.some(w=>x.includes(w))) return "warn";
+    if (good.some(g=>x.includes(g))) return "good";
+    return "info";
+  }
+  function renderMyStatus(s){
+    const cls = String(s.classroom||"");
+    const cards = [
+      {l:"Google Classroom", t:tone(cls,["yes","enrolled","joined"],["no","not"]),
+       v: !cls ? "Not checked yet" : /^y/i.test(cls) ? "Enrolled" : /^n/i.test(cls) ? "Not enrolled yet" : cls,
+       n: /^n/i.test(cls) ? "Join with your registered email. The class code is in your welcome email." : ""},
+      {l:"Attendance", t:tone(s.attendance,["on track","ok","good","complete","met"],["attention","low","below","not"]),
+       v: s.attendance || "Updated after each day", n: s.attendance_note || ""},
+      {l:"Project", t:tone(s.project,["pass","evaluated","submitted","received","accepted"],["resubmit","not submitted","fail","missing"]),
+       v: s.project || "Not due yet", n: s.project_note || ""},
+      {l:"Certificate", t:tone(s.certificate,["eligible","issued"],["not yet","not eligible"]),
+       v: s.certificate || "Decided after the programme", n: s.certificate_note || ""}
+    ];
+    $("statusResult").innerHTML = `
+      <div class="who"><p class="eyebrow">${esc(s.participant_id)}${s.cohort_id?" · "+esc(s.cohort_id):""}</p>
+        <h3>${esc(s.name)}</h3>${s.last_updated?`<p class="upd">Last updated: ${esc(s.last_updated)}</p>`:""}</div>
+      <div class="scards">${cards.map(c=>`<div class="scard t-${c.t}"><span class="lab eyebrow">${c.l}</span><span class="chip">${esc(c.v)}</span>${c.n?`<p>${esc(c.n)}</p>`:""}</div>`).join("")}</div>`;
+    $("statusResult").hidden = false;
+  }
+  $("sId").value = store.get("cbpai-pid") || "";
+  $("statusForm").addEventListener("submit", async e=>{
+    e.preventDefault();
+    const id = $("sId").value.trim().toUpperCase(), email = $("sEmail").value.trim().toLowerCase();
+    $("statusResult").hidden = true;
+    if (!/^CBPAI-[A-Z0-9]+-\d+$/.test(id)) return sMsg("Enter your Participant ID as it appears in your email, for example CBPAI-ADV07-001.", "warn");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return sMsg("Enter the email address you registered with.", "warn");
+    if (!/^https:\/\//.test(STATUS_API)) return sMsg("Status checking opens soon. Please check back later.", "");
+    const btn = $("statusForm").querySelector("button"); btn.disabled = true; sMsg("Checking…", "");
+    try{
+      const res = await fetch(`${STATUS_API}?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`);
+      const j = await res.json();
+      if (j.ok){ store.set("cbpai-pid", id); sMsg("", ""); renderMyStatus(j.status); }
+      else if (j.error==="notfound") sMsg("We couldn't find that Participant ID with this email. Check both and try again, using the email you registered with on the MMTTP portal.", "warn");
+      else sMsg("Status checking is not available right now. Please try again later.", "warn");
+    }catch(err){ sMsg("Couldn't reach the status service. Check your internet connection and try again.", "warn"); }
+    btn.disabled = false;
+  });
 
   /* ---------- Zoom screen ---------- */
   const lobby = $("lobby"); let lobbyTimer = null; const cued = {};
