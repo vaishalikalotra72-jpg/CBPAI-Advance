@@ -354,6 +354,7 @@ footer a{color:var(--teal-text)}
   <div class="wrap">
     <span>Team VLED · Indian Institute of Technology Ropar, Rupnagar, Punjab</span>
     <span id="otherCohorts"></span>
+    <span id="syncNote"></span>
     <span>Queries: <span class="mail">mmttp@iitrpr.ac.in</span></span>
   </div>
 </footer>
@@ -657,6 +658,7 @@ footer a{color:var(--teal-text)}
       const raw = await loadSheet();
       store.set("cbpai-sheet-cache", JSON.stringify(raw));
       useData(raw, true);
+      $("syncNote").textContent = "Schedule synced from Google Sheet at " + hm(ist().min) + " IST";
     }catch(e){ console.warn("CBPAI: using saved schedule;", e.message); }
   }
   refresh();
