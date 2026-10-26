@@ -101,7 +101,8 @@ section.block{padding-block:clamp(44px,7vw,72px)}
 .sec-head p.note{color:var(--muted);max-width:44ch;font-size:.95rem}
 
 /* Course outcomes arc */
-.arc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.arc{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:12px}
+.arc.many{grid-template-columns:repeat(var(--n),minmax(160px,1fr));overflow-x:auto;padding-bottom:6px}
 .arc button{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:16px;border-top:3px solid var(--line);background:var(--surface);border-radius:0 0 6px 6px;min-width:0;transition:border-color .2s, transform .2s}
 .arc button:hover{transform:translateY(-2px)}
 .arc button[aria-selected="true"]{border-top-color:var(--saffron)}
@@ -133,7 +134,7 @@ section.block{padding-block:clamp(44px,7vw,72px)}
 .now-pill{display:inline-block;margin-left:8px;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--now)}
 
 /* Numbers */
-.tally{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-block:1px solid var(--line);margin-top:8px}
+.tally{display:grid;grid-template-columns:repeat(var(--tn,4),minmax(0,1fr));gap:0;border-block:1px solid var(--line);margin-top:8px}
 .tally div{padding:20px 16px 20px 0;min-width:0}
 .tally div+div{padding-left:16px;border-left:1px solid var(--line)}
 .tally .n{font-family:var(--f-display);font-size:2.6rem;line-height:1;color:var(--fg);font-variant-numeric:tabular-nums}
@@ -158,6 +159,14 @@ h3.sub{font-size:1.35rem;margin-bottom:14px}
 footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
 footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
+
+/* Notices from the sheet */
+.notice-row{background:var(--saffron);color:#1b1206}
+.notice-row.urgent{background:#b42318;color:#fff}
+.notice-row .wrap{display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap;padding-block:10px}
+.notice-row .eyebrow{font-weight:500;opacity:.85}
+.notice-row p{font-weight:600;min-width:0}
+footer a{color:var(--teal-text)}
 
 /* Zoom screen (lobby) */
 .ghost{background:transparent;color:var(--hero-fg);border:1px solid var(--hero-line);border-radius:999px;padding:11px 18px;font:500 .95rem var(--f-body);cursor:pointer}
@@ -196,7 +205,7 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
   .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fact:nth-child(3){padding-left:0;border-left:0}
   .fact:nth-child(n+3){border-top:1px solid var(--hero-line)}
-  .arc{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+  .arc{grid-template-columns:repeat(var(--n,5),minmax(150px,1fr));overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
   .arc button{scroll-snap-align:start}
   .brief{grid-template-columns:1fr}
   .tally{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -232,13 +241,15 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
   </div>
 </header>
 
+<div class="notice" id="notice" hidden></div>
+
 <section class="hero" aria-labelledby="title">
   <div class="wrap">
     <p class="initiative eyebrow"><span>A UGC · <b>Malaviya Mission Teacher Training Programme</b> initiative</span><span>Conducted by VLED Lab, IIT Ropar</span></p>
     <h1 id="title">Capacity Building Programme in <em>Artificial Intelligence</em> <span class="level">Advanced</span></h1>
-    <p class="theme-line">Automating, publishing and quality-assuring your teaching with AI.</p>
+    <p class="theme-line" id="themeLine">Automating, publishing and quality-assuring your teaching with AI.</p>
 
-    <div class="facts">
+    <div class="facts" id="facts">
       <div class="fact"><div class="k eyebrow">Dates</div><div class="v">26 – 30 October 2026<small>Monday to Friday</small></div></div>
       <div class="fact"><div class="k eyebrow">Daily timing</div><div class="v">9:30 AM – 4:00 PM<small>Indian Standard Time</small></div></div>
       <div class="fact"><div class="k eyebrow">Mode</div><div class="v">Live online<small>Zoom, with Google Classroom &amp; Spandan</small></div></div>
@@ -259,7 +270,7 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <p class="eyebrow">Five days · five course outcomes</p>
+        <p class="eyebrow" id="weekEyebrow">Five days · five course outcomes</p>
         <h2 id="weekTitle">The week, one outcome a day</h2>
       </div>
       <p class="note">Every session is a case study. You leave each one with a working artefact you can use in your own course.</p>
@@ -272,7 +283,7 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 
 <section class="block" style="padding-top:0" aria-label="Programme at a glance">
   <div class="wrap">
-    <div class="tally">
+    <div class="tally" id="tally">
       <div><div class="n">15</div><div class="l">case studies</div></div>
       <div><div class="n">15</div><div class="l">artefacts you build</div></div>
       <div><div class="n">5</div><div class="l">course outcomes</div></div>
@@ -342,6 +353,7 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 <footer>
   <div class="wrap">
     <span>Team VLED · Indian Institute of Technology Ropar, Rupnagar, Punjab</span>
+    <span id="otherCohorts"></span>
     <span>Queries: <span class="mail">mmttp@iitrpr.ac.in</span></span>
   </div>
 </footer>
@@ -349,126 +361,315 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (function(){
-  const DAYS = [
-    {d:26, wd:"Monday", co:"CO1", focus:"Reclaiming Time from Routine Work",
-     coText:"Automate routine classroom workflows (records, monitoring and reflection) using AI-written Apps Scripts on Google Sheets.",
-     s:[{n:1,t:"The AI Workshop Contagion: Strategies for Resilient Teaching",a:"An introductory session on strategies for resilient teaching.",sp:"Dr. Pratima Khandelwal"},
-        {n:2,t:"Effortless Classroom Record-Keeping",a:"An AI-written Apps Script that keeps your class attendance and marks sheet up to date.",sp:"Dr. Shilpa"},
-        {n:3,t:"Measuring and Improving Question Paper Quality",a:"An AI quality report on seven criteria, Bloom’s levels, unit and CO coverage, for balanced assessment.",sp:"Dr. Anitha"}]},
-    {d:27, wd:"Tuesday", co:"CO2", focus:"Planning and Publishing Your Course",
-     coText:"Plan the course and publish it for learners: work plan, calendar and a live course website, with materials in the mother tongue.",
-     s:[{n:4,t:"Planning the Semester: Work Plan and Course Calendar",a:"An AI-drafted work plan and session calendar for structured course delivery.",sp:"Dr. Poorna Shankar"},
-        {n:5,t:"Taking Your Course Live: Design to Publish",a:"An AI-designed course homepage published on GitHub Pages. One link for all your learners.",sp:"Dr. Vandana Kate"},
-        {n:6,t:"Publishing in the Mother Tongue",a:"AI translation and localisation of your course page and materials for multilingual access.",sp:"Dr. Sivapriya"}]},
-    {d:28, wd:"Wednesday", co:"CO3", focus:"NEP 2020-Aligned Pedagogy",
-     coText:"Redesign a course and its learning experiences in alignment with NEP 2020 using AI.",
-     s:[{n:7,t:"Aligning Your Course with NEP 2020",a:"An AI-assisted NEP audit and Bloom’s-levelled outcomes for competency-based design.",sp:"Dr. Pitchumani Angayarkanni"},
-        {n:8,t:"Designing Experiential Learning: Cases and Games",a:"AI-crafted teaching cases and gamified quizzes, ready for your classroom.",sp:"Dr. Sharmila Banu"},
-        {n:9,t:"Building a Working Simulation",a:"An AI-built interactive simulation on your course site, for learning by exploration.",sp:"Dr. Kavitha"}]},
-    {d:29, wd:"Thursday", co:"CO4", focus:"Evidence from Your Own Data",
-     coText:"Build quality evidence from your own course data (attainment analysis, question-paper analysis and improvement planning) with AI.",
-     s:[{n:10,t:"Daily Student Reflection at Scale",a:"Automated exit tickets with AI summaries, for reflective practice.",sp:"Dr. Jeyamala"},
-        {n:11,t:"Automating CO–PO Attainment Analysis",a:"AI-built attainment sheets that turn marks into outcome-based evidence.",sp:"Dr. Poorna Shankar"},
-        {n:12,t:"Closing the Loop: From Results to Action",a:"From attainment data to a continuous improvement plan for next term.",sp:"Dr. Pratima Khandelwal"}]},
-    {d:30, wd:"Friday", co:"CO5", focus:"AI Agents and Academic Integrity",
-     coText:"Build and direct working AI agents with Claude and Claude Code, and design assessment that stays valid when students use AI.",
-     s:[{n:13,t:"Delegating Routine Work to Your Course Agent",a:"A Claude and Claude Code agent that runs your records and course site.",sp:"Dr. Kartik Gupta"},
-        {n:14,t:"Accelerating Research and Academic Writing",a:"An agent for literature discovery and academic writing.",sp:"Dr. Kartik Gupta"},
-        {n:15,t:"When Students Use AI: Integrity and AI-Resilient Assessment",a:"A redesigned assessment and a one-page class AI-use policy.",sp:"Dr. Rashpinder Kaur"}]}
-  ];
-  // minutes after midnight IST
-  const SLOTS = [{from:570,to:660,label:"9:30 – 11:00 AM"},{from:690,to:780,label:"11:30 AM – 1:00 PM"},{from:870,to:960,label:"2:30 – 4:00 PM"}];
-  const LUNCH = {from:780,to:870,label:"1:00 – 2:30 PM"};
+  const SHEET_ID = "1cuu9xbsrIdUCEX3UmkQ-kx3vHHKd4-FZk50j7c5387w";
+  const PAGE_URL = "https://vaishalikalotra72-jpg.github.io/CBPAI-Advance/";
+  const TABS = {cohorts:"Cohorts", days:"Days", sessions:"Sessions", notices:"Notices"};
+  // Copy of the sheet, used until the live sheet loads or if it cannot be reached
+  const FALLBACK = {"cohorts":[{"cohort_id":"ADV07","title":"Capacity Building Programme in Artificial Intelligence","level":"Advanced","theme_line":"Automating, publishing and quality-assuring your teaching with AI.","start_date":"2026-10-26","end_date":"2026-10-30","daily_timing":"9:30 AM – 4:00 PM","lunch_start":"13:00","lunch_end":"14:30","mode":"Live online","mode_note":"Zoom, with Google Classroom & Spandan","audience":"Faculty members","audience_note":"of higher education institutions"}],"days":[{"cohort_id":"ADV07","date":"2026-10-26","focus":"Reclaiming Time from Routine Work","outcome_code":"CO1","outcome_text":"Automate routine classroom workflows (records, monitoring and reflection) using AI-written Apps Scripts on Google Sheets."},{"cohort_id":"ADV07","date":"2026-10-27","focus":"Planning and Publishing Your Course","outcome_code":"CO2","outcome_text":"Plan the course and publish it for learners: work plan, calendar and a live course website, with materials in the mother tongue."},{"cohort_id":"ADV07","date":"2026-10-28","focus":"NEP 2020-Aligned Pedagogy","outcome_code":"CO3","outcome_text":"Redesign a course and its learning experiences in alignment with NEP 2020 using AI."},{"cohort_id":"ADV07","date":"2026-10-29","focus":"Evidence from Your Own Data","outcome_code":"CO4","outcome_text":"Build quality evidence from your own course data (attainment analysis, question-paper analysis and improvement planning) with AI."},{"cohort_id":"ADV07","date":"2026-10-30","focus":"AI Agents and Academic Integrity","outcome_code":"CO5","outcome_text":"Build and direct working AI agents with Claude and Claude Code, and design assessment that stays valid when students use AI."}],"sessions":[{"cohort_id":"ADV07","date":"2026-10-26","start":"09:30","end":"11:00","case_no":"1","title":"The AI Workshop Contagion: Strategies for Resilient Teaching","what_you_build":"An introductory session on strategies for resilient teaching.","speaker":"Dr. Pratima Khandelwal"},{"cohort_id":"ADV07","date":"2026-10-26","start":"11:30","end":"13:00","case_no":"2","title":"Effortless Classroom Record-Keeping","what_you_build":"An AI-written Apps Script that keeps your class attendance and marks sheet up to date.","speaker":"Dr. Shilpa"},{"cohort_id":"ADV07","date":"2026-10-26","start":"14:30","end":"16:00","case_no":"3","title":"Measuring and Improving Question Paper Quality","what_you_build":"An AI quality report on seven criteria, Bloom’s levels, unit and CO coverage, for balanced assessment.","speaker":"Dr. Anitha"},{"cohort_id":"ADV07","date":"2026-10-27","start":"09:30","end":"11:00","case_no":"4","title":"Planning the Semester: Work Plan and Course Calendar","what_you_build":"An AI-drafted work plan and session calendar for structured course delivery.","speaker":"Dr. Poorna Shankar"},{"cohort_id":"ADV07","date":"2026-10-27","start":"11:30","end":"13:00","case_no":"5","title":"Taking Your Course Live: Design to Publish","what_you_build":"An AI-designed course homepage published on GitHub Pages. One link for all your learners.","speaker":"Dr. Vandana Kate"},{"cohort_id":"ADV07","date":"2026-10-27","start":"14:30","end":"16:00","case_no":"6","title":"Publishing in the Mother Tongue","what_you_build":"AI translation and localisation of your course page and materials for multilingual access.","speaker":"Dr. Sivapriya"},{"cohort_id":"ADV07","date":"2026-10-28","start":"09:30","end":"11:00","case_no":"7","title":"Aligning Your Course with NEP 2020","what_you_build":"An AI-assisted NEP audit and Bloom’s-levelled outcomes for competency-based design.","speaker":"Dr. Pitchumani Angayarkanni"},{"cohort_id":"ADV07","date":"2026-10-28","start":"11:30","end":"13:00","case_no":"8","title":"Designing Experiential Learning: Cases and Games","what_you_build":"AI-crafted teaching cases and gamified quizzes, ready for your classroom.","speaker":"Dr. Sharmila Banu"},{"cohort_id":"ADV07","date":"2026-10-28","start":"14:30","end":"16:00","case_no":"9","title":"Building a Working Simulation","what_you_build":"An AI-built interactive simulation on your course site, for learning by exploration.","speaker":"Dr. Kavitha"},{"cohort_id":"ADV07","date":"2026-10-29","start":"09:30","end":"11:00","case_no":"10","title":"Daily Student Reflection at Scale","what_you_build":"Automated exit tickets with AI summaries, for reflective practice.","speaker":"Dr. Jeyamala"},{"cohort_id":"ADV07","date":"2026-10-29","start":"11:30","end":"13:00","case_no":"11","title":"Automating CO–PO Attainment Analysis","what_you_build":"AI-built attainment sheets that turn marks into outcome-based evidence.","speaker":"Dr. Poorna Shankar"},{"cohort_id":"ADV07","date":"2026-10-29","start":"14:30","end":"16:00","case_no":"12","title":"Closing the Loop: From Results to Action","what_you_build":"From attainment data to a continuous improvement plan for next term.","speaker":"Dr. Pratima Khandelwal"},{"cohort_id":"ADV07","date":"2026-10-30","start":"09:30","end":"11:00","case_no":"13","title":"Delegating Routine Work to Your Course Agent","what_you_build":"A Claude and Claude Code agent that runs your records and course site.","speaker":"Dr. Kartik Gupta"},{"cohort_id":"ADV07","date":"2026-10-30","start":"11:30","end":"13:00","case_no":"14","title":"Accelerating Research and Academic Writing","what_you_build":"An agent for literature discovery and academic writing.","speaker":"Dr. Kartik Gupta"},{"cohort_id":"ADV07","date":"2026-10-30","start":"14:30","end":"16:00","case_no":"15","title":"When Students Use AI: Integrity and AI-Resilient Assessment","what_you_build":"A redesigned assessment and a one-page class AI-use policy.","speaker":"Dr. Rashpinder Kaur"}],"notices":[]};
+  const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const WDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
   const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const store = {
     get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } },
     set(k,v){ try{ localStorage.setItem(k,v) }catch(e){} }
   };
+  const pad = n => String(n).padStart(2,"0");
+
+  /* ---------- Reading the sheet ---------- */
+  function parseCSV(text){
+    const rows=[]; let row=[], cell="", q=false;
+    for (let i=0;i<text.length;i++){
+      const ch=text[i];
+      if (q){ if (ch==='"'){ if (text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+      else if (ch==='"') q=true;
+      else if (ch===','){ row.push(cell); cell=""; }
+      else if (ch==='\n' || ch==='\r'){ if (ch==='\r' && text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=""; }
+      else cell+=ch;
+    }
+    if (cell!=="" || row.length){ row.push(cell); rows.push(row); }
+    if (!rows.length) return [];
+    const head = rows[0].map(h=>h.trim().toLowerCase());
+    return rows.slice(1).filter(r=>r.some(v=>v.trim()!=="")).map(r=>Object.fromEntries(head.map((h,i)=>[h,(r[i]||"").trim()])));
+  }
+  async function fetchTab(name){
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(name)}&t=${Date.now()}`;
+    const res = await fetch(url, {cache:"no-store"});
+    if (!res.ok) throw new Error(name+" "+res.status);
+    const text = await res.text();
+    if (/^\s*</.test(text)) throw new Error(name+" is not shared publicly");
+    return parseCSV(text);
+  }
+  async function loadSheet(){
+    const [cohorts, days, sessions, notices] = await Promise.all([fetchTab(TABS.cohorts), fetchTab(TABS.days), fetchTab(TABS.sessions), fetchTab(TABS.notices).catch(()=>[])]);
+    if (!cohorts.length || !cohorts[0].cohort_id) throw new Error("Cohorts tab is empty");
+    return {cohorts, days, sessions, notices};
+  }
+
+  /* ---------- Values typed in the sheet ---------- */
+  function pDate(s){
+    s = String(s||"").trim(); let m;
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+    if ((m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/))){
+      let d=+m[1], mo=+m[2]; if (mo>12 && d<=12){ const x=d; d=mo; mo=x; }   // dd/mm/yyyy, or mm/dd/yyyy when unambiguous
+      return `${m[3]}-${pad(mo)}-${pad(d)}`;
+    }
+    const t = Date.parse(s + " UTC"); if (!isNaN(t)){ const x=new Date(t); return `${x.getUTCFullYear()}-${pad(x.getUTCMonth()+1)}-${pad(x.getUTCDate())}`; }
+    return "";
+  }
+  function pTime(s){
+    const m = String(s||"").trim().match(/^(\d{1,2})(?:[:.](\d{2}))?(?::\d{2})?\s*(am|pm)?/i);
+    if (!m || m[0]==="") return null;
+    let h=+m[1]; const mi=+(m[2]||0), ap=(m[3]||"").toLowerCase();
+    if (ap==="pm" && h<12) h+=12; if (ap==="am" && h===12) h=0;
+    return h*60+mi;
+  }
+  function pStamp(s){   // "YYYY-MM-DD HH:MM" in IST -> comparable number in the shifted clock
+    s = String(s||"").trim(); if (!s) return null;
+    const d = pDate(s); if (!d) return null;
+    const rest = s.replace(/^\S+\s*/, ""); const tm = rest ? pTime(rest) : 0;
+    return Date.UTC(+d.slice(0,4), +d.slice(5,7)-1, +d.slice(8,10)) + (tm||0)*60000;
+  }
+  const dUTC = k => Date.UTC(+k.slice(0,4), +k.slice(5,7)-1, +k.slice(8,10));
+  const wd = k => WDAYS[new Date(dUTC(k)).getUTCDay()];
+  const dayNum = k => +k.slice(8,10);
+  const monName = k => MONTHS[+k.slice(5,7)-1];
+  const hm = min => { const h=Math.floor(min/60), m=min%60; return ((h+11)%12+1)+":"+pad(m)+(h>=12?" PM":" AM"); };
+  function range(a,b){
+    const A=hm(a), B=hm(b);
+    return (a<720)===(b<720) ? A.replace(/ [AP]M$/,"")+" – "+B : A+" – "+B;
+  }
+
+  function buildModel(raw){
+    const cohorts = raw.cohorts.filter(r=>r.cohort_id).map(r=>({
+      id:r.cohort_id.trim(), title:r.title||"Capacity Building Programme in Artificial Intelligence", level:r.level||"",
+      theme:r.theme_line||"", start:pDate(r.start_date), end:pDate(r.end_date), timing:r.daily_timing||"",
+      lunchFrom:pTime(r.lunch_start), lunchTo:pTime(r.lunch_end), mode:r.mode||"", modeNote:r.mode_note||"",
+      audience:r.audience||"", audienceNote:r.audience_note||""
+    }));
+    return {cohorts, days:raw.days||[], sessions:raw.sessions||[], notices:raw.notices||[]};
+  }
+  function cohortView(model, C){
+    const same = r => (r.cohort_id||"").trim().toLowerCase() === C.id.toLowerCase();
+    const map = new Map();
+    model.days.filter(same).forEach(r=>{ const k=pDate(r.date); if(!k) return;
+      map.set(k, {date:k, focus:r.focus||"", co:r.outcome_code||"", coText:r.outcome_text||"", s:[]}); });
+    model.sessions.filter(same).forEach(r=>{ const k=pDate(r.date), f=pTime(r.start), t=pTime(r.end); if(!k || f==null) return;
+      if (!map.has(k)) map.set(k, {date:k, focus:"", co:"", coText:"", s:[]});
+      map.get(k).s.push({n:r.case_no||"", t:r.title||"", a:r.what_you_build||"", sp:r.speaker||"", from:f, to:(t!=null?t:f+60)}); });
+    const days = [...map.values()].sort((a,b)=>a.date<b.date?-1:1);
+    days.forEach(d=>d.s.sort((a,b)=>a.from-b.from));
+    if (!C.start && days.length) C.start = days[0].date;
+    if (!C.end && days.length) C.end = days[days.length-1].date;
+    return Object.assign({}, C, {days});
+  }
+  function pickCohort(model){
+    const want = new URLSearchParams(location.search).get("c");
+    if (want){ const c = model.cohorts.find(x=>x.id.toLowerCase()===want.toLowerCase()); if (c) return c; }
+    const today = ist().key;
+    const live = model.cohorts.filter(c=>c.start && c.end && c.start<=today && today<=c.end);
+    if (live.length) return live[0];
+    const up = model.cohorts.filter(c=>c.start && c.start>today).sort((a,b)=>a.start<b.start?-1:1);
+    if (up.length) return up[0];
+    return model.cohorts.slice().sort((a,b)=>(a.end||"")<(b.end||"")?1:-1)[0];
+  }
 
   /* ---------- Programme clock (IST) ---------- */
   function ist(){
     const t = new Date(Date.now() + 330*60000);
-    return {y:t.getUTCFullYear(), m:t.getUTCMonth()+1, d:t.getUTCDate(), min:t.getUTCHours()*60+t.getUTCMinutes(), ms:t.getTime()};
+    const y=t.getUTCFullYear(), m=t.getUTCMonth()+1, d=t.getUTCDate();
+    return {y, m, d, key:`${y}-${pad(m)}-${pad(d)}`, min:t.getUTCHours()*60+t.getUTCMinutes(), s:t.getUTCSeconds(), ms:t.getTime()};
   }
-  function clock(){
-    const n = ist();
-    const inOct = n.y===2026 && n.m===10;
-    const dayIdx = inOct ? DAYS.findIndex(x=>x.d===n.d) : -1;
-    const before = n.y<2026 || (n.y===2026 && (n.m<10 || (n.m===10 && n.d<26)));
-    let text, live=false, slot=-1;
-    if (before){
-      const start = Date.UTC(2026,9,26,9,30);
-      const days = Math.ceil((start - n.ms)/86400000);
-      text = days<=1 ? "Begins tomorrow, Monday 26 October, 9:30 AM IST" : `Begins in ${days} days · Monday 26 October, 9:30 AM IST`;
-    } else if (dayIdx>=0){
-      const D = DAYS[dayIdx], dn = dayIdx+1;
-      slot = SLOTS.findIndex(s=>n.min>=s.from && n.min<s.to);
-      if (slot>=0){ live=true; const cs=D.s[slot]; text = `Live now · Day ${dn} · Case Study ${cs.n} with ${cs.sp}`; }
-      else if (n.min<570) text = `Today is Day ${dn} · sessions begin at 9:30 AM IST`;
-      else if (n.min>=660 && n.min<690) text = `Day ${dn} · short break · next session at 11:30 AM`;
-      else if (n.min>=LUNCH.from && n.min<LUNCH.to) text = `Day ${dn} · lunch break · sessions resume at 2:30 PM`;
-      else text = dayIdx<4 ? `Day ${dn} complete · Day ${dn+1} begins tomorrow at 9:30 AM IST` : "The programme has concluded. Thank you for learning with us.";
-    } else {
-      text = "The programme has concluded. Thank you for learning with us.";
+  function timeline(){
+    const n = ist(), days = cur.days, t = {n, phase:"empty", di:-1, live:-1, next:-1, ndi:-1, remain:0};
+    if (!days.some(d=>d.s.length)) return t;
+    const sec = n.min*60 + n.s;
+    const di = days.findIndex(d=>d.date===n.key);
+    if (di>=0 && days[di].s.length){
+      const D = days[di]; t.di = di;
+      const live = D.s.findIndex(s=>n.min>=s.from && n.min<s.to);
+      if (live>=0){ t.phase="live"; t.live=live; return t; }
+      const next = D.s.findIndex(s=>s.from*60>sec);
+      if (next>=0){
+        t.next=next; t.ndi=di; t.remain=D.s[next].from*60-sec;
+        t.phase = next===0 ? "beforeDay" : (cur.lunchFrom!=null && cur.lunchTo!=null && n.min>=cur.lunchFrom && n.min<cur.lunchTo ? "lunch" : "gap");
+        return t;
+      }
+      t.phase = "doneDay";
     }
-    $("statusText").textContent = text;
-    $("status").classList.toggle("live", live);
-    return {dayIdx, slot};
+    const ndi = days.findIndex(d=>d.date>n.key && d.s.length);
+    if (ndi>=0){
+      t.ndi=ndi; t.next=0; t.remain=(dUTC(days[ndi].date) + days[ndi].s[0].from*60000 - n.ms)/1000;
+      if (t.phase!=="doneDay") t.phase = n.key<days[0].date ? "before" : "between";
+      return t;
+    }
+    t.phase = "after";
+    return t;
+  }
+  const csName = s => s.n ? "Case Study "+s.n : s.t;
+  function whenDay(k){
+    const diff = Math.round((dUTC(k)-dUTC(ist().key))/86400000);
+    return diff===1 ? "tomorrow" : `${wd(k)} ${dayNum(k)} ${monName(k)}`;
+  }
+  function statusText(t){
+    const days = cur.days;
+    switch (t.phase){
+      case "empty": return "The schedule will be announced soon.";
+      case "before": { const D=days[t.ndi], diff=Math.round((dUTC(D.date)-dUTC(t.n.key))/86400000), w=`${wd(D.date)} ${dayNum(D.date)} ${monName(D.date)}, ${hm(D.s[0].from)} IST`;
+        return diff===1 ? `Begins tomorrow, ${w}` : `Begins in ${diff} days · ${w}`; }
+      case "live": { const s=days[t.di].s[t.live]; return `Live now · Day ${t.di+1} · ${csName(s)}${s.sp?" with "+s.sp:""}`; }
+      case "beforeDay": return `Today is Day ${t.di+1} · sessions begin at ${hm(days[t.di].s[0].from)} IST`;
+      case "gap": return `Day ${t.di+1} · short break · next session at ${hm(days[t.di].s[t.next].from)}`;
+      case "lunch": return `Day ${t.di+1} · lunch break · sessions resume at ${hm(days[t.di].s[t.next].from)}`;
+      case "doneDay": { const N=days[t.ndi]; return `Day ${t.di+1} complete · Day ${t.ndi+1} begins ${whenDay(N.date)} at ${hm(N.s[0].from)} IST`; }
+      case "between": { const N=days[t.ndi]; return `Next: Day ${t.ndi+1} · ${wd(N.date)} ${dayNum(N.date)} ${monName(N.date)}, ${hm(N.s[0].from)} IST`; }
+      default: return "The programme has concluded. Thank you for learning with us.";
+    }
   }
 
-  /* ---------- Day tabs ---------- */
-  let current = 0, nowInfo = clock();
+  /* ---------- Rendering ---------- */
+  let model = null, cur = null, current = 0, tl = null, SHOWN = [], qrFor = "";
+
+  function renderHero(){
+    const C = cur, title = esc(C.title).replace("Artificial Intelligence", "<em>Artificial Intelligence</em>");
+    $("title").innerHTML = title + (C.level ? ` <span class="level">${esc(C.level)}</span>` : "");
+    $("themeLine").textContent = C.theme; $("themeLine").hidden = !C.theme;
+    let dates = "", dnote = "";
+    if (C.start && C.end){
+      const sm = C.start.slice(0,7)===C.end.slice(0,7);
+      dates = sm ? `${dayNum(C.start)} – ${dayNum(C.end)} ${monName(C.end)} ${C.end.slice(0,4)}` : `${dayNum(C.start)} ${monName(C.start).slice(0,3)} – ${dayNum(C.end)} ${monName(C.end).slice(0,3)} ${C.end.slice(0,4)}`;
+      dnote = C.start===C.end ? wd(C.start) : `${wd(C.start)} to ${wd(C.end)}`;
+    }
+    const facts = [["Dates",dates,dnote],["Daily timing",C.timing,C.timing?"Indian Standard Time":""],["Mode",C.mode,C.modeNote],["For",C.audience,C.audienceNote]].filter(f=>f[1]);
+    $("facts").innerHTML = facts.map(f=>`<div class="fact"><div class="k eyebrow">${f[0]}</div><div class="v">${esc(f[1])}${f[2]?`<small>${esc(f[2])}</small>`:""}</div></div>`).join("");
+    document.title = `CBPAI ${C.level||""} · ${C.start ? monName(C.start)+" "+C.start.slice(0,4) : C.id}`.replace("  "," ");
+  }
+  function renderSummary(){
+    const all = cur.days.flatMap(d=>d.s);
+    const outcomes = new Set(cur.days.map(d=>d.co).filter(Boolean)).size;
+    const hasCases = all.some(s=>s.n);
+    const tiles = [
+      [all.length, hasCases ? "case studies" : "live sessions"],
+      [all.filter(s=>s.a).length, "artefacts you build"],
+      [outcomes, "course outcomes"],
+      [new Set(all.map(s=>s.sp).filter(Boolean)).size, "expert resource persons"]
+    ].filter(x=>x[0]>0);
+    $("tally").style.setProperty("--tn", tiles.length || 1);
+    $("tally").innerHTML = tiles.map(x=>`<div><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+    $("tally").hidden = !tiles.length;
+    const nd = cur.days.length;
+    $("weekEyebrow").textContent = nd ? `${nd} day${nd>1?"s":""}${outcomes?` · ${outcomes} course outcome${outcomes>1?"s":""}`:""}` : "Schedule";
+    $("weekTitle").textContent = outcomes && outcomes===nd ? (nd===5 ? "The week, one outcome a day" : "One outcome a day") : "Programme schedule";
+    SHOWN = [
+      `Welcome to the ${cur.title}${cur.level?` (${cur.level})`:""}.`,
+      "A Malaviya Mission Teacher Training Programme initiative, conducted by VLED Lab, IIT Ropar.",
+      cur.start ? `From ${dayNum(cur.start)} ${monName(cur.start)} to ${dayNum(cur.end)} ${monName(cur.end)} ${cur.end.slice(0,4)}: ${nd} day${nd>1?"s":""} of hands-on learning with AI.` : "",
+      cur.days.filter(d=>d.focus).map(d=>d.focus).join(". ") ? cur.days.filter(d=>d.focus).map(d=>d.focus).join(". ")+"." : "",
+      all.length ? `${all.length} sessions${all.some(s=>s.a)?", each with something you build and take back to your classroom":""}.` : "",
+      "Keep your camera on, join with your full name, and let us learn together."
+    ].filter(Boolean);
+  }
+  function renderNotices(){
+    const now = ist().ms;
+    const act = (model.notices||[]).filter(r=>{
+      const id=(r.cohort_id||"").trim().toLowerCase();
+      if (!r.message || (id!=="all" && id!==cur.id.toLowerCase())) return false;
+      const a=pStamp(r.show_from), b=pStamp(r.show_until);
+      return (a==null || now>=a) && (b==null || now<b);
+    });
+    $("notice").innerHTML = act.map(r=>`<div class="notice-row${/urgent/i.test(r.style||"")?" urgent":""}"><div class="wrap"><span class="eyebrow">${/urgent/i.test(r.style||"")?"Important":"Notice"}</span><p>${esc(r.message)}</p></div></div>`).join("");
+    $("notice").hidden = !act.length;
+  }
+  function renderOthers(){
+    const others = model.cohorts.filter(c=>c.id!==cur.id);
+    $("otherCohorts").innerHTML = others.length ? "Other cohorts: " + others.map(c=>`<a href="?c=${encodeURIComponent(c.id)}">${esc(c.level||c.id)}${c.start?` · ${dayNum(c.start)} ${monName(c.start).slice(0,3)} ${c.start.slice(0,4)}`:""}</a>`).join(" · ") : "";
+  }
   function renderArc(){
-    $("arc").innerHTML = DAYS.map((D,i)=>`
+    const n = cur.days.length;
+    $("arc").style.setProperty("--n", n || 1);
+    $("arc").classList.toggle("many", n>6);
+    $("arc").innerHTML = cur.days.map((D,i)=>`
       <button role="tab" id="tab-${i}" aria-controls="panel" aria-selected="${i===current}" tabindex="${i===current?0:-1}" data-i="${i}">
-        <span class="co">${D.co} · Day ${i+1}</span>
-        <span class="day">${D.wd.slice(0,3)}, ${D.d} Oct</span>
-        <span class="focus">${D.focus}</span>
-        ${i===nowInfo.dayIdx?'<span class="today-tag">Today</span>':''}
+        <span class="co">${D.co?esc(D.co)+" · ":""}Day ${i+1}</span>
+        <span class="day">${wd(D.date).slice(0,3)}, ${dayNum(D.date)} ${monName(D.date).slice(0,3)}</span>
+        <span class="focus">${esc(D.focus || (D.s[0] ? D.s[0].t : ""))}</span>
+        ${i===tl.di?'<span class="today-tag">Today</span>':''}
       </button>`).join("");
   }
   function renderPanel(){
-    const D = DAYS[current];
-    const rows = [];
+    const D = cur.days[current];
+    if (!D){ $("panel").innerHTML = `<div class="panel-head"><h3>The schedule will be announced soon.</h3></div>`; return; }
+    const rows = []; let lunchDone = cur.lunchFrom==null || cur.lunchTo==null;
     D.s.forEach((s,k)=>{
-      if (k===2) rows.push(`<li class="slot lunch"><span class="time">${LUNCH.label}</span><span class="what">Lunch</span></li>`);
-      const isNow = current===nowInfo.dayIdx && k===nowInfo.slot;
+      if (!lunchDone && s.from>=cur.lunchTo && k>0){ rows.push(`<li class="slot lunch"><span class="time">${range(cur.lunchFrom,cur.lunchTo)}</span><span class="what">Lunch</span></li>`); lunchDone=true; }
+      const isNow = current===tl.di && k===tl.live;
       rows.push(`<li class="slot${isNow?' is-now':''}">
-        <span class="time">${SLOTS[k].label}</span>
-        <div><span class="cs">Case Study ${s.n}</span>${isNow?'<span class="now-pill">● Live now</span>':''}
-          <h4>${s.t}</h4><p class="artefact">${s.a}</p><span class="speaker">${s.sp}</span></div></li>`);
+        <span class="time">${range(s.from,s.to)}</span>
+        <div>${s.n?`<span class="cs">Case Study ${esc(s.n)}</span>`:""}${isNow?'<span class="now-pill">● Live now</span>':''}
+          <h4>${esc(s.t)}</h4>${s.a?`<p class="artefact">${esc(s.a)}</p>`:""}${s.sp?`<span class="speaker">${esc(s.sp)}</span>`:""}</div></li>`);
     });
     $("panel").setAttribute("aria-labelledby","tab-"+current);
     $("panel").innerHTML = `
       <div class="panel-head">
-        <div class="bigdate">${D.d}<small>${D.wd} · Oct 2026</small></div>
-        <h3>${D.focus}</h3>
-        <p class="co-text"><b>${D.co}</b> &nbsp;${D.coText}</p>
+        <div class="bigdate">${dayNum(D.date)}<small>${wd(D.date)} · ${monName(D.date).slice(0,3)} ${D.date.slice(0,4)}</small></div>
+        <h3>${esc(D.focus || "Day "+(current+1))}</h3>
+        ${D.coText?`<p class="co-text">${D.co?`<b>${esc(D.co)}</b> &nbsp;`:""}${esc(D.coText)}</p>`:""}
       </div>
-      <ol class="slots">${rows.join("")}</ol>`;
+      <ol class="slots">${rows.join("") || '<li class="slot"><span class="time"></span><div>Sessions for this day will be announced soon.</div></li>'}</ol>`;
+  }
+  function renderStatus(){
+    $("statusText").textContent = statusText(tl);
+    $("status").classList.toggle("live", tl.phase==="live");
+  }
+  function renderAll(keepDay){
+    tl = timeline();
+    if (!keepDay || current>=cur.days.length) current = tl.di>=0 ? tl.di : (tl.ndi>=0 ? tl.ndi : 0);
+    renderHero(); renderSummary(); renderNotices(); renderOthers(); renderArc(); renderPanel(); renderStatus();
+    setQR();
   }
   function select(i, withSound){
-    current = (i+DAYS.length)%DAYS.length;
+    if (!cur.days.length) return;
+    current = (i+cur.days.length)%cur.days.length;
     renderArc(); renderPanel();
     const t = $("tab-"+current); if (t && withSound!==undefined) t.focus();
-    if (withSound) chime(DAY_NOTES[current]);
+    if (withSound) chime(DAY_NOTES[current%DAY_NOTES.length]);
   }
   $("arc").addEventListener("click", e=>{ const b=e.target.closest("button[data-i]"); if(b) select(+b.dataset.i, true); });
   $("arc").addEventListener("keydown", e=>{
     if (e.key==="ArrowRight"){ e.preventDefault(); select(current+1, true); }
     if (e.key==="ArrowLeft"){ e.preventDefault(); select(current-1, true); }
   });
-  current = nowInfo.dayIdx>=0 ? nowInfo.dayIdx : 0;
-  renderArc(); renderPanel();
-  setInterval(()=>{ const prev=JSON.stringify(nowInfo); nowInfo=clock(); if(JSON.stringify(nowInfo)!==prev){ renderArc(); renderPanel(); } }, 30000);
 
-  /* ---------- Sound: tanpura drone, bell, spoken welcome ---------- */
+  function useData(raw, keepDay){
+    model = buildModel(raw);
+    if (!model.cohorts.length) return false;
+    const sameId = cur && cur.id;
+    cur = cohortView(model, pickCohort(model));
+    renderAll(keepDay && sameId===cur.id);
+    return true;
+  }
+  let boot = FALLBACK;
+  try{ const c = JSON.parse(store.get("cbpai-sheet-cache")||"null"); if (c && c.cohorts && c.cohorts.length) boot = c; }catch(e){}
+  useData(boot, false);
+  async function refresh(){
+    try{
+      const raw = await loadSheet();
+      store.set("cbpai-sheet-cache", JSON.stringify(raw));
+      useData(raw, true);
+    }catch(e){ console.warn("CBPAI: using saved schedule;", e.message); }
+  }
+  refresh();
+  setInterval(refresh, 5*60*1000);
+  setInterval(()=>{ const prev = JSON.stringify([tl.phase,tl.di,tl.live,tl.next,tl.ndi]); tl = timeline();
+    if (JSON.stringify([tl.phase,tl.di,tl.live,tl.next,tl.ndi])!==prev){ renderArc(); renderPanel(); renderNotices(); }
+    renderStatus(); }, 30000);
+
+  /* ---------- Sound: calm piano welcome and chimes ---------- */
   let soundOn = store.get("cbpai-sound")!=="off";
-  let ctx=null, master=null, analyser=null, droneTimer=null, nextPluck=0, pluckIdx=0, playing=false, speaking=false;
-  const SA = 138.59;                       // C# (kali 1), a common tanpura tuning
-  const PATTERN = [SA*0.75, SA, SA, SA/2]; // Pa – Sa – Sa – lower Sa
-  const DAY_NOTES = [1, 9/8, 5/4, 3/2, 5/3].map(r=>SA*4*r); // Sa Re Ga Pa Dha
+  let ctx=null, master=null, analyser=null, playing=false;
+  const SA = 138.59;
+  const DAY_NOTES = [1, 9/8, 5/4, 3/2, 5/3].map(r=>SA*4*r);
 
   function updateToggle(){
     $("soundToggle").setAttribute("aria-pressed", soundOn);
@@ -480,7 +681,6 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
     soundOn = !soundOn; store.set("cbpai-sound", soundOn?"on":"off"); updateToggle();
     if (!soundOn && playing) stopWelcome();
   });
-
   function ensureCtx(){
     if (ctx) { if (ctx.state==="suspended") ctx.resume(); return true; }
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
@@ -494,25 +694,6 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
     master.connect(analyser); analyser.connect(ctx.destination);
     master.connect(rev); rev.connect(wet); wet.connect(ctx.destination);
     return true;
-  }
-  function pluck(f, t){
-    const out = ctx.createGain(); out.connect(master);
-    const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.7;
-    lp.frequency.setValueAtTime(2600,t); lp.frequency.exponentialRampToValueAtTime(700,t+4);
-    lp.connect(out);
-    for (let k=1;k<=9;k++){
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type="sine"; o.frequency.value = f*k*(1+(Math.random()-.5)*0.0016);
-      const amp = 0.16/Math.pow(k,0.9);
-      g.gain.setValueAtTime(0.0001,t);
-      if (k<3){ g.gain.exponentialRampToValueAtTime(amp,t+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t+4.2); }
-      else {   // jawari bloom: upper partials swell after the pluck
-        g.gain.exponentialRampToValueAtTime(amp*0.35,t+0.02);
-        g.gain.exponentialRampToValueAtTime(amp*1.1,t+0.5+k*0.06);
-        g.gain.exponentialRampToValueAtTime(0.0001,t+3.6);
-      }
-      o.connect(g); g.connect(lp); o.start(t); o.stop(t+4.4);
-    }
   }
   function bell(f, t, vol){
     [[1,1],[2.76,.45],[5.4,.22],[8.93,.1]].forEach(([r,a])=>{
@@ -528,18 +709,6 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
     if (!playing){ master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setValueAtTime(0.7,ctx.currentTime); master.gain.setTargetAtTime(0.0001,ctx.currentTime+2,0.6); }
     bell(f, ctx.currentTime+0.01, 0.09);
   }
-  function scheduleDrone(){
-    while (nextPluck < ctx.currentTime + 0.4){ pluck(PATTERN[pluckIdx%4], nextPluck); nextPluck += pluckIdx%4===3 ? 1.6 : 0.9; pluckIdx++; }
-  }
-
-  const SHOWN = [
-    "Welcome to the Capacity Building Programme in Artificial Intelligence (Advanced).",
-    "A Malaviya Mission Teacher Training Programme initiative, conducted by VLED Lab, IIT Ropar.",
-    "From 26 to 30 October 2026, we spend five days building real teaching tools with AI.",
-    "Automating routine work. Publishing your course. Aligning with NEP 2020. Building evidence from your own data. And directing AI agents.",
-    "Fifteen case studies, and fifteen artefacts you take back to your classroom.",
-    "Keep your camera on, join with your full name, and let us learn together."
-  ];
   let captionTimer=null, endTimer=null, melodyNodes=[];
   // Calm soft-piano arpeggios over a warm pad: C – G – Am – F, twice, ending on C
   const C3 = 130.81, EIGHTH = 0.4;
@@ -596,8 +765,7 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
     endTimer = setTimeout(()=>{ if(playing) stopWelcome(); }, (2.4+len+1.5)*1000);
   }
   function stopWelcome(){
-    playing=false; speaking=false; clearInterval(droneTimer); clearTimeout(captionTimer);
-    clearTimeout(endTimer);
+    playing=false; clearTimeout(captionTimer); clearTimeout(endTimer);
     if (ctx) melodyNodes.forEach(n=>{ try{ n.stop(ctx.currentTime+1.5); }catch(e){} });
     melodyNodes=[];
     if (ctx){ const t=ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(master.gain.value,0.0001),t); master.gain.exponentialRampToValueAtTime(0.0001,t+1.4); }
@@ -613,51 +781,51 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
   /* ---------- Zoom screen ---------- */
   const lobby = $("lobby"); let lobbyTimer = null; const cued = {};
   document.querySelectorAll(".letterhead .logos img").forEach((img,i)=>{ const t=lobby.querySelector('[data-logo="'+i+'"]'); if(t) t.src=img.src; });
-  try{ const q = qrcode(0, "M"); q.addData("https://vaishalikalotra72-jpg.github.io/CBPAI-Advance/"); q.make(); $("lQr").innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); }catch(e){ $("lQr").hidden = true; }
-  const hm = min => { const h=Math.floor(min/60), m=min%60; return ((h+11)%12+1)+":"+String(m).padStart(2,"0")+(h>=12?" PM":" AM"); };
-  const dur = s => { s=Math.max(0,Math.floor(s)); if (s>=86400){ const d=Math.floor(s/86400), h=Math.floor(s%86400/3600); return d+"d "+h+"h"; } if (s>=3600) return Math.floor(s/3600)+"h "+String(Math.floor(s%3600/60)).padStart(2,"0")+"m"; return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
-  function card(cs, when){ return `<div><p class="eyebrow cs">Case Study ${cs.n}</p><h3>${cs.t}</h3><p class="who">${cs.sp}</p></div><span class="when">${when}</span>`; }
+  function setQR(){
+    const url = PAGE_URL + "?c=" + encodeURIComponent(cur.id);
+    if (url===qrFor) return; qrFor = url;
+    try{ const q = qrcode(0, "M"); q.addData(url); q.make(); $("lQr").innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); $("lQr").hidden=false; }catch(e){ $("lQr").hidden = true; }
+    const lbl = $("lobby").querySelector(".lobby-qr .lobby-label"); if (lbl) lbl.textContent = url.replace(/^https:\/\//,"");
+  }
+  const dur = s => { s=Math.max(0,Math.floor(s)); if (s>=86400){ const d=Math.floor(s/86400), h=Math.floor(s%86400/3600); return d+"d "+h+"h"; } if (s>=3600) return Math.floor(s/3600)+"h "+pad(Math.floor(s%3600/60))+"m"; return pad(Math.floor(s/60))+":"+pad(s%60); };
+  function card(s, when){ return `<div>${s.n?`<p class="eyebrow cs">Case Study ${esc(s.n)}</p>`:""}<h3>${esc(s.t)}</h3>${s.sp?`<p class="who">${esc(s.sp)}</p>`:""}</div><span class="when">${when}</span>`; }
   function cue(key, remain){
     if (remain<=60 && remain>55 && !cued[key+"a"]){ cued[key+"a"]=1; chime(DAY_NOTES[0]); }
     if (remain<=1 && remain>-4 && !cued[key+"b"]){ cued[key+"b"]=1; chime(DAY_NOTES[0]); setTimeout(()=>chime(DAY_NOTES[3]),350); }
   }
   function tickLobby(){
-    const n = ist(), t = new Date(n.ms), sec = n.min*60 + t.getUTCSeconds();
-    $("lClock").textContent = hm(n.min).replace(" ", ":"+String(t.getUTCSeconds()).padStart(2,"0")+" ");
-    const inOct = n.y===2026 && n.m===10, i = inOct ? DAYS.findIndex(x=>x.d===n.d) : -1;
-    const before = n.y<2026 || (n.y===2026 && (n.m<10 || (n.m===10 && n.d<26)));
-    const countEl = $("lCount"); countEl.classList.remove("live");
-    let list = "";
-    if (before){
-      const D = DAYS[0];
-      $("lDay").textContent = "Day 1 · Monday 26 October 2026"; $("lFocus").textContent = D.focus;
-      $("lLabel").textContent = "Programme begins in"; countEl.textContent = dur((Date.UTC(2026,9,26,9,30)-n.ms)/1000);
-      $("lCard").innerHTML = card(D.s[0], "9:30 AM");
-      list = D.s.map((s,k)=>`<div><span class="st">${SLOTS[k].label}</span><b>${s.t}</b>${s.sp}</div>`).join("");
-    } else if (i>=0){
-      const D = DAYS[i]; let live=-1, next=-1;
-      for (let k=0;k<SLOTS.length;k++){ if (sec<SLOTS[k].from*60){ next=k; break; } if (sec<SLOTS[k].to*60){ live=k; break; } }
-      $("lDay").textContent = `Day ${i+1} of 5 · ${D.wd} ${D.d} October · ${D.co}`; $("lFocus").textContent = D.focus;
-      if (live>=0){
-        $("lLabel").textContent = "On air now · ends at "+hm(SLOTS[live].to); countEl.textContent = "Live"; countEl.classList.add("live");
-        $("lCard").innerHTML = card(D.s[live], SLOTS[live].label);
-      } else if (next>=0){
-        const remain = SLOTS[next].from*60 - sec;
-        $("lLabel").textContent = next===0 ? "First session begins in" : (n.min>=LUNCH.from ? "Lunch break · next session in" : "Short break · next session in");
-        countEl.textContent = dur(remain); cue(i+"-"+next, remain);
-        $("lCard").innerHTML = card(D.s[next], "Starts "+hm(SLOTS[next].from));
-      } else if (i<4){
-        $("lLabel").textContent = "Today's sessions are complete"; countEl.textContent = "See you tomorrow";
-        $("lCard").innerHTML = card(DAYS[i+1].s[0], "Tomorrow, 9:30 AM");
-      } else {
-        $("lLabel").textContent = "The programme has concluded"; countEl.textContent = "Thank you"; $("lCard").innerHTML = "";
-      }
-      list = D.s.map((s,k)=>{ const st = k===live?"live":k===next?"next":(sec>=SLOTS[k].to*60?"done":""); const lab = st==="live"?"● Live now":st==="next"?"Up next":st==="done"?"Completed":SLOTS[k].label; return `<div class="${st}"><span class="st">${lab}</span><b>${s.t}</b>${s.sp}</div>`; }).join("");
+    const t = timeline(), n = t.n, days = cur.days, countEl = $("lCount");
+    $("lClock").textContent = hm(n.min).replace(" ", ":"+pad(n.s)+" ");
+    countEl.classList.remove("live");
+    const showDay = t.di>=0 ? t.di : (t.ndi>=0 ? t.ndi : days.length-1);
+    const D = days[showDay];
+    $("lDay").textContent = D ? `Day ${showDay+1} of ${days.length} · ${wd(D.date)} ${dayNum(D.date)} ${monName(D.date)}${D.co?" · "+D.co:""}` : `${cur.level||""} ${cur.id}`;
+    $("lFocus").textContent = D ? (D.focus || cur.title) : cur.title;
+    let label = "", count = "", cardHtml = "";
+    if (t.phase==="live"){
+      const s = days[t.di].s[t.live];
+      label = "On air now · ends at "+hm(s.to); count = "Live"; countEl.classList.add("live"); cardHtml = card(s, range(s.from,s.to));
+    } else if (t.phase==="beforeDay" || t.phase==="gap" || t.phase==="lunch"){
+      const s = days[t.di].s[t.next];
+      label = t.phase==="beforeDay" ? "First session begins in" : t.phase==="lunch" ? "Lunch break · next session in" : "Short break · next session in";
+      count = dur(t.remain); cue(t.di+"-"+t.next, t.remain); cardHtml = card(s, "Starts "+hm(s.from));
+    } else if (t.phase==="before" || t.phase==="between" || t.phase==="doneDay"){
+      const N = days[t.ndi], s = N.s[0];
+      label = t.phase==="before" ? "Programme begins in" : t.phase==="doneDay" ? "Today's sessions are complete" : "Next session in";
+      count = t.phase==="doneDay" ? (whenDay(N.date)==="tomorrow" ? "See you tomorrow" : "See you "+wd(N.date)) : dur(t.remain);
+      cardHtml = card(s, (whenDay(N.date)==="tomorrow" ? "Tomorrow" : `${wd(N.date).slice(0,3)} ${dayNum(N.date)} ${monName(N.date).slice(0,3)}`)+", "+hm(s.from));
+    } else if (t.phase==="empty"){
+      label = "Schedule"; count = "Coming soon";
     } else {
-      $("lDay").textContent = "26 – 30 October 2026"; $("lFocus").textContent = "Thank you for learning with us";
-      $("lLabel").textContent = "The programme has concluded"; countEl.textContent = "Thank you"; $("lCard").innerHTML = "";
+      label = "The programme has concluded"; count = "Thank you";
     }
-    $("lList").innerHTML = list;
+    $("lLabel").textContent = label; countEl.textContent = count; $("lCard").innerHTML = cardHtml;
+    $("lList").innerHTML = D ? D.s.map((s,k)=>{
+      const today = showDay===t.di, sec = n.min*60+n.s;
+      const st = today && k===t.live ? "live" : today && k===t.next ? "next" : (today && sec>=s.to*60 ? "done" : "");
+      const lab = st==="live" ? "● Live now" : st==="next" ? "Up next" : st==="done" ? "Completed" : range(s.from,s.to);
+      return `<div class="${st}"><span class="st">${lab}</span><b>${esc(s.t)}</b>${esc(s.sp)}</div>`;
+    }).join("") : "";
   }
   function openLobby(gesture){
     lobby.hidden = false; document.body.style.overflow = "hidden";
@@ -685,25 +853,18 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
     g2.clearRect(0,0,w,h);
     const css = getComputedStyle(document.documentElement);
     const sa = css.getPropertyValue("--saffron").trim(), te = css.getPropertyValue("--teal").trim();
-    // baseline ticks: five days
+    const ticks = Math.max(1, cur.days.length);
     g2.fillStyle = "rgba(243,239,230,.18)";
-    for (let i=0;i<=5;i++){ const x=Math.round(i*(w-1)/5)+.5; g2.fillRect(x, mid-6, 1, 12); }
+    for (let i=0;i<=ticks;i++){ const x=Math.round(i*(w-1)/ticks)+.5; g2.fillRect(x, mid-6, 1, 12); }
     let live = false;
     if (analyser && playing){ if(!data) data=new Uint8Array(analyser.fftSize); analyser.getByteTimeDomainData(data); live=true; }
-    const lines = [[te,0.55,1.4],[sa,1,1]];
-    lines.forEach(([col,alpha,mult],li)=>{
+    [[te,0.55,1.4],[sa,1,1]].forEach(([col,alpha,mult],li)=>{
       g2.beginPath(); g2.strokeStyle=col; g2.globalAlpha=alpha; g2.lineWidth = li?2:1.2;
       const N = 220;
       for (let i=0;i<=N;i++){
         const x = i/N*w, env = Math.sin(Math.PI*i/N);
-        let y;
-        if (live){
-          const v = (data[Math.floor(i/N*(data.length-1))]-128)/128;
-          const voice = speaking ? Math.sin(i*0.31+phase*7)*0.18*Math.random() : 0;
-          y = mid + (v*2.6*mult + voice) * h*0.42 * env;
-        } else {
-          y = mid + Math.sin(i*0.09*mult + phase*(li?1:-0.7))*4*env + Math.sin(i*0.023+phase*0.4)*3*env;
-        }
+        const y = live ? mid + ((data[Math.floor(i/N*(data.length-1))]-128)/128)*2.6*mult*h*0.42*env
+                       : mid + Math.sin(i*0.09*mult + phase*(li?1:-0.7))*4*env + Math.sin(i*0.023+phase*0.4)*3*env;
         i ? g2.lineTo(x,y) : g2.moveTo(x,y);
       }
       g2.stroke();
