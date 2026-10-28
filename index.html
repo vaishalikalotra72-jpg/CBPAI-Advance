@@ -791,7 +791,7 @@ footer a{color:var(--teal-text)}
     if (!playing){ master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setValueAtTime(0.7,ctx.currentTime); master.gain.setTargetAtTime(0.0001,ctx.currentTime+2,0.6); }
     bell(f, ctx.currentTime+0.01, 0.09);
   }
-  let captionTimer=null, endTimer=null, melodyNodes=[];
+  let captionTimer=null, melodyNodes=[];
   // Calm soft-piano arpeggios over a warm pad: C – G – Am – F, twice, ending on C
   const C3 = 130.81, EIGHTH = 0.4;
   const semi = n => C3*Math.pow(2, n/12);
@@ -815,24 +815,24 @@ footer a{color:var(--teal-text)}
     lp.connect(pg); pg.connect(master);
     notes.forEach(n=>{ [-4,4].forEach(c=>{ const o=ctx.createOscillator(); o.type="sine"; o.frequency.value=semi(n); o.detune.value=c; o.connect(lp); o.start(t); o.stop(t+len+1.3); melodyNodes.push(o); }); });
   }
+  // Schedules one pass of the chord cycle, then queues the next pass so the welcome loops until stopped
+  let loopTimer=null;
   function playMelody(t0){
+    if (!playing) return;
     let t=t0;
-    for (let rep=0; rep<2; rep++){
-      CHORDS.forEach(ch=>{
-        padChord(ch.pad, t, EIGHTH*8);
-        ch.arp.forEach((n,k)=> keyNote(semi(n), t+k*EIGHTH, k===0?0.085:0.06));
-        t += EIGHTH*8;
-      });
-    }
-    padChord(CHORDS[0].pad, t, 2.5);
-    [0,7,12,16].forEach((n,k)=> keyNote(semi(n+12), t+k*0.09, 0.07));
-    return t+3-t0;
+    melodyNodes = melodyNodes.slice(-96);   // keep the previous pass's tail so Stop can still silence it
+    CHORDS.forEach(ch=>{
+      padChord(ch.pad, t, EIGHTH*8);
+      ch.arp.forEach((n,k)=> keyNote(semi(n), t+k*EIGHTH, k===0?0.085:0.06));
+      t += EIGHTH*8;
+    });
+    loopTimer = setTimeout(()=> playMelody(t), Math.max(0, (t-ctx.currentTime-1.5)*1000));
   }
   function showCaption(i, delay){
     captionTimer = setTimeout(()=>{
-      if (!playing) return;
-      $("caption").textContent = SHOWN[i];
-      if (i+1<SHOWN.length) showCaption(i+1, 4600);
+      if (!playing || !SHOWN.length) return;
+      $("caption").textContent = SHOWN[i%SHOWN.length];
+      showCaption(i+1, 4600);
     }, delay);
   }
   function startWelcome(){
@@ -842,12 +842,11 @@ footer a{color:var(--teal-text)}
     const t = ctx.currentTime;
     master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(0.0001,t); master.gain.exponentialRampToValueAtTime(0.75,t+2.2);
     bell(SA*8, t+0.05, 0.12); bell(SA*12, t+0.65, 0.08);
-    const len = playMelody(t+2.4);
+    playMelody(t+2.4);
     showCaption(0, 2600);
-    endTimer = setTimeout(()=>{ if(playing) stopWelcome(); }, (2.4+len+1.5)*1000);
   }
   function stopWelcome(){
-    playing=false; clearTimeout(captionTimer); clearTimeout(endTimer);
+    playing=false; clearTimeout(captionTimer); clearTimeout(loopTimer);
     if (ctx) melodyNodes.forEach(n=>{ try{ n.stop(ctx.currentTime+1.5); }catch(e){} });
     melodyNodes=[];
     if (ctx){ const t=ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(Math.max(master.gain.value,0.0001),t); master.gain.exponentialRampToValueAtTime(0.0001,t+1.4); }
