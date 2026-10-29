@@ -893,10 +893,11 @@ footer a{color:var(--teal-text)}
        v: s.project || "Not due yet", n: s.project_note || ""},
       {l:"Certificate", t:tone(s.certificate,["eligible","issued"],["not yet","not eligible"]),
        v: s.certificate || "Decided after the programme", n: s.certificate_note || ""}
-    ];
+    ].filter((c,i)=>[cls, s.attendance, s.project, s.certificate][i]);   // only show what the team has filled in
     $("statusResult").innerHTML = `
       <div class="who"><p class="eyebrow">${esc(s.participant_id)}${s.cohort_id?" · "+esc(s.cohort_id):""}</p>
         <h3>${esc(s.name)}</h3>${s.last_updated?`<p class="upd">Last updated: ${esc(s.last_updated)}</p>`:""}</div>
+      ${cards.length?"":`<p class="upd">Your status will appear here after the first day of the programme.</p>`}
       <div class="scards">${cards.map(c=>`<div class="scard t-${c.t}"><span class="lab eyebrow">${c.l}</span><span class="chip">${esc(c.v)}</span>${c.n?`<p>${esc(c.n)}</p>`:""}</div>`).join("")}</div>`;
     $("statusResult").hidden = false;
   }
