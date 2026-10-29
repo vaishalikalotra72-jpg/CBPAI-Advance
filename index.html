@@ -168,9 +168,10 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 .views button:hover{color:var(--fg)}
 .views button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--saffron)}
 .views button:focus-visible{outline:2px solid var(--saffron);outline-offset:-2px}
-.status-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px}
+.status-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px}
 .status-form label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.9rem;min-width:0}
 .status-form input{font:400 1rem var(--f-body);padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--fg);min-width:0}
+.status-form .opt{font-weight:400;opacity:.7}
 .status-form input:focus{outline:2px solid var(--teal);outline-offset:0}
 .check{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:12px 22px;font:600 1rem var(--f-body);cursor:pointer}
 .check:hover{filter:brightness(1.08)}
@@ -381,11 +382,12 @@ footer a{color:var(--teal-text)}
         <p class="eyebrow">For participants</p>
         <h2>Check your status</h2>
       </div>
-      <p class="note">Enter your Participant ID from your email from Team VLED, and the email address you registered with.</p>
+      <p class="note">Enter your Participant ID from your email from Team VLED, and either the email address you registered with or your full name as you registered.</p>
     </div>
     <form id="statusForm" class="status-form" novalidate>
       <label for="sId">Participant ID<input id="sId" name="id" autocomplete="off" autocapitalize="characters" placeholder="CBPAI-ADV07-001"></label>
-      <label for="sEmail">Registered email<input id="sEmail" name="email" type="email" autocomplete="email" placeholder="name@example.com"></label>
+      <label for="sEmail">Registered email <span class="opt">(or use your name)</span><input id="sEmail" name="email" type="email" autocomplete="email" placeholder="name@example.com"></label>
+      <label for="sName">Full name <span class="opt">(if you used another email)</span><input id="sName" name="name" autocomplete="name" placeholder="As registered, e.g. Neha Rai"></label>
       <button type="submit" class="check">Check status</button>
     </form>
     <p class="status-msg" id="statusMsg" role="status" aria-live="polite"></p>
@@ -905,17 +907,18 @@ footer a{color:var(--teal-text)}
   $("sId").addEventListener("focus", e=>e.target.select());   // typing replaces a remembered ID instead of adding to it
   $("statusForm").addEventListener("submit", async e=>{
     e.preventDefault();
-    const id = $("sId").value.trim().toUpperCase(), email = $("sEmail").value.trim().toLowerCase();
+    const id = $("sId").value.trim().toUpperCase(), email = $("sEmail").value.trim().toLowerCase(), name = $("sName").value.trim().replace(/\s+/g," ");
     $("statusResult").hidden = true;
     if (!/^CBPAI-[A-Z0-9]+-\d+$/.test(id)) return sMsg("Enter your Participant ID as it appears in your email, for example CBPAI-ADV07-001.", "warn");
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return sMsg("Enter the email address you registered with.", "warn");
+    if (!email && !name) return sMsg("Enter the email address you registered with, or your full name as you registered.", "warn");
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return sMsg("Check the email address, or clear it and use your name instead.", "warn");
     if (!/^https:\/\//.test(STATUS_API)) return sMsg("Status checking opens soon. Please check back later.", "");
     const btn = $("statusForm").querySelector("button"); btn.disabled = true; sMsg("Checking…", "");
     try{
-      const res = await fetch(`${STATUS_API}?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`);
+      const res = await fetch(`${STATUS_API}?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
       const j = await res.json();
       if (j.ok){ store.set("cbpai-pid", id); sMsg("", ""); renderMyStatus(j.status); }
-      else if (j.error==="notfound") sMsg("We couldn't find that Participant ID with this email. Check both and try again, using the email you registered with on the MMTTP portal.", "warn");
+      else if (j.error==="notfound") sMsg("We couldn't match that Participant ID with this email or name. Check your ID, then try your registered email, or your full name as you wrote it on the MMTTP portal.", "warn");
       else sMsg("Status checking is not available right now. Please try again later.", "warn");
     }catch(err){ sMsg("Couldn't reach the status service. Check your internet connection and try again.", "warn"); }
     btn.disabled = false;
