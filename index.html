@@ -901,6 +901,7 @@ footer a{color:var(--teal-text)}
     $("statusResult").hidden = false;
   }
   $("sId").value = store.get("cbpai-pid") || "";
+  $("sId").addEventListener("focus", e=>e.target.select());   // typing replaces a remembered ID instead of adding to it
   $("statusForm").addEventListener("submit", async e=>{
     e.preventDefault();
     const id = $("sId").value.trim().toUpperCase(), email = $("sEmail").value.trim().toLowerCase();
