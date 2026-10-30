@@ -190,6 +190,9 @@ footer .mail{font-family:var(--f-mono);color:var(--fg);user-select:all}
 .scard.t-good{border-top-color:var(--good)}
 .scard.t-warn{border-top-color:var(--now)}
 .scard.t-info{border-top-color:var(--teal)}
+.nextsteps{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:6px;padding:16px 18px}
+.nextsteps ol{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.nextsteps li b{font-weight:600}
 .faq{margin-top:44px;max-width:760px}
 .faq dl{margin:0}
 .faq dt{font-weight:600;margin-top:16px}
@@ -898,11 +901,14 @@ footer a{color:var(--teal-text)}
       {l:"Certificate", t:tone(s.certificate,["eligible","issued"],["not yet","not eligible"]),
        v: s.certificate || "Decided after the programme", n: s.certificate_note || ""}
     ].filter((c,i)=>[s.joined_on, s.attendance, s.spandan, cls, s.project, s.certificate][i]);   // only show what the team has filled in
+    const steps = String(s.next_steps||"").split("|").map(x=>x.trim()).filter(Boolean);
     $("statusResult").innerHTML = `
       <div class="who"><p class="eyebrow">${esc(s.participant_id)}${s.cohort_id?" · "+esc(s.cohort_id):""}</p>
         <h3>${esc(s.name)}</h3>${s.last_updated?`<p class="upd">Last updated: ${esc(s.last_updated)}</p>`:""}</div>
       ${cards.length?"":`<p class="upd">Your status will appear here after the first day of the programme.</p>`}
-      <div class="scards">${cards.map(c=>`<div class="scard t-${c.t}"><span class="lab eyebrow">${c.l}</span><span class="chip">${esc(c.v)}</span>${c.n?`<p>${esc(c.n)}</p>`:""}</div>`).join("")}</div>`;
+      <div class="scards">${cards.map(c=>`<div class="scard t-${c.t}"><span class="lab eyebrow">${c.l}</span><span class="chip">${esc(c.v)}</span>${c.n?`<p>${esc(c.n)}</p>`:""}</div>`).join("")}</div>
+      ${steps.length?`<div class="nextsteps"><span class="lab eyebrow">Your next steps</span><ol>${steps.map(x=>{const i=x.indexOf(":");
+        return `<li>${i>0?`<b>${esc(x.slice(0,i))}:</b>${esc(x.slice(i+1))}`:esc(x)}</li>`;}).join("")}</ol></div>`:""}`;
     $("statusResult").hidden = false;
   }
   $("sId").value = store.get("cbpai-pid") || "";
