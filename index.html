@@ -886,16 +886,18 @@ footer a{color:var(--teal-text)}
   function renderMyStatus(s){
     const cls = String(s.classroom||"");
     const cards = [
-      {l:"Google Classroom", t:tone(cls,["yes","enrolled","joined"],["no","not"]),
-       v: !cls ? "Not checked yet" : /^y/i.test(cls) ? "Enrolled" : /^n/i.test(cls) ? "Not enrolled yet" : cls,
-       n: /^n/i.test(cls) ? "Join with your registered email. The class code is in your welcome email." : ""},
+      {l:"Joined on", t:"info", v: s.joined_on, n: ""},
       {l:"Attendance", t:tone(s.attendance,["on track","ok","good","complete","met"],["attention","low","below","not"]),
        v: s.attendance || "Updated after each day", n: s.attendance_note || ""},
-      {l:"Project", t:tone(s.project,["pass","evaluated","submitted","received","accepted"],["resubmit","not submitted","fail","missing"]),
+      {l:"Spandan quizzes", t:"info", v: s.spandan, n: s.spandan_note || ""},
+      {l:"Google Classroom", t:tone(cls,["yes","enrolled","joined"],["no","not"]),
+       v: !cls ? "Not checked yet" : /^y/i.test(cls) ? "Joined" : /^n/i.test(cls) ? "Not joined yet" : cls,
+       n: /^n/i.test(cls) ? "Please join the class with your registered email." : ""},
+      {l:"Capstone Project", t:tone(s.project,["pass","evaluated","submitted","received","accepted"],["resubmit","not submitted","fail","missing"]),
        v: s.project || "Not due yet", n: s.project_note || ""},
       {l:"Certificate", t:tone(s.certificate,["eligible","issued"],["not yet","not eligible"]),
        v: s.certificate || "Decided after the programme", n: s.certificate_note || ""}
-    ].filter((c,i)=>[cls, s.attendance, s.project, s.certificate][i]);   // only show what the team has filled in
+    ].filter((c,i)=>[s.joined_on, s.attendance, s.spandan, cls, s.project, s.certificate][i]);   // only show what the team has filled in
     $("statusResult").innerHTML = `
       <div class="who"><p class="eyebrow">${esc(s.participant_id)}${s.cohort_id?" · "+esc(s.cohort_id):""}</p>
         <h3>${esc(s.name)}</h3>${s.last_updated?`<p class="upd">Last updated: ${esc(s.last_updated)}</p>`:""}</div>
